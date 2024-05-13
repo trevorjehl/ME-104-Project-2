@@ -1,7 +1,6 @@
 % Calculate the torque out for N stage transmission with fixed transmission
 % ratio
 clear all; close all; clc;
-
 setupProject2Props;
 
 mu = 0.2;
@@ -67,7 +66,7 @@ for iNstages = 1:1:max(n_stages_arr)
 end
 
 
-
+% % % % % % % % % % % % % % % % MAKE PLOTS % % % % % % % % % % % % % % % %
 
 figure(1);
 hold on;

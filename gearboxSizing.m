@@ -33,7 +33,6 @@ r_s = D_s./2;
 
 T_lift = F_lift.*r_lift;
 
-
 eta = etaSpur_maN1N2(0.34, alpha, N_s, N_b);
 eta_arr = eta.^(n_stages_arr);
 [etaInflectX, etaInflectY] = findInflectionPoints(n_stages_arr((1/dstage):end),eta_arr((1/dstage):end));

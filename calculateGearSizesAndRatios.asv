@@ -8,7 +8,7 @@ setupProject2Props;
 Roverall = 12; % overall transmission ratio
 FOS = 1.5; % overall factor of safety
 alpha = (20/180)*pi;
-mu = 0.4
+mu = 0.4;
 
 NteethArr = 16:2:100;
 Module_arr = 0.5:0.5:2;
@@ -18,7 +18,7 @@ R_arr = D_arr./2; % mm
 % Work through the geartrain from back to front, from the lifting mass to
 % the drop mass. 
 % Note that gear 4 = last gear connected to the lift mass
-module = 1; % select module index
+module = 2 % select module index
 
 dataArr = zeros(1,4*4 + 2);
 for gear4 = 1:1:length(R_arr)
@@ -26,7 +26,7 @@ for gear4 = 1:1:length(R_arr)
     N(4) = NteethArr(gear4);
 
 F(4) = F_lift;
-T(4) = r(4)*F(4);
+T(4) = r(4)*F(4)/1000;
 mass(4) = spurMass_fosTrsN(FOS,T(4),pla_rho,pla_sigma_yield,N(4));
 for gear3 = 1:1:length(R_arr)
     r(3) = R_arr(gear3, module);
@@ -36,7 +36,7 @@ for gear3 = 1:1:length(R_arr)
 eta43 = etaSpur_maN1N2(mu, alpha, N(4), N(3));
 
 F(3) = F(4);
-T(3) = T(4)*R43*eta43;
+T(3) = T(4)*R43*eta43/1000;
 
 mass(3) = spurMass_fosTrsN(FOS,T(3),pla_rho,pla_sigma_yield,N(3));
 
@@ -52,7 +52,7 @@ for gear2 = 1:1:length(R_arr)
     eta21 =  etaSpur_maN1N2(mu, alpha, N(2), N(1));
 
 F(2) = (r(3)/r(2))*F(3);
-T(2) = F(2)*r(2);
+T(2) = F(2)*r(2)/1000;
 
 F(1) = F(2);
 T(1) = T(4)*R43*R21*eta43*eta21;
@@ -72,32 +72,7 @@ end
 % Remove the initial row of zeros
 dataArr = dataArr(2:end, :);
 
-% % Calculate the total mass for each entry in dataArr
-% totalMass = sum(dataArr(:, 15:18), 2);
-% 
-% % Combine the relevant gear ratio columns with the total mass into one array
-% combinedArr = [dataArr(:, [1, 2, 3, 4]), totalMass];
-% 
-% % Find the unique combinations of gear ratios
-% [uniqueRatios, ~, idx] = unique(combinedArr(:, 1:4), 'rows');
-% 
-% % Initialize an array to store the minimum mass entries
-% minMassEntries = zeros(length(uniqueRatios), size(dataArr, 2));
-% 
-% % Loop through each unique combination and find the corresponding row with the minimum mass
-% for i = 1:length(uniqueRatios)
-%     i
-%     % Find the rows that match the current unique combination
-%     matchingRows = (idx == i);
-% 
-%     % Get the row index of the minimum mass for the current unique combination
-%     [~, minIndex] = min(totalMass(matchingRows));
-% 
-%     % Store the row with the minimum mass in minMassEntries
-%     minMassEntries(i, :) = dataArr(find(matchingRows, 1) - 1 + minIndex, :);
-% end
 
-%%
 clf;
 % % Example data
 x = dataArr(:,1)./dataArr(:,2); % Your x array
@@ -137,11 +112,16 @@ title('Contour Plot');
 
 z = sum(dataArr(:,15:18),2)./(dataArr(:,13).*dataArr(:,14));
 [optimalZ, optimalIdx] = min(z);
-dataArr(optimalIdx,:)
-optimal
+optimalRow = dataArr(optimalIdx,:);
+optimal_radius = optimalRow(1:4)
+R3_over_R4 = x(optimalIdx)
+R1_over_R2 = y(optimalIdx)
+optimal_mass = sum(optimalRow(15:18))
 
 figure(3)
-scatter3(x, y, z, dotsize, z, 'filled');
+scatter3(x, y, z, dotsize, z);
+hold on;
+plot3(x(optimalIdx), y(optimalIdx), z(optimalIdx), 'ro','MarkerSize',10, 'LineWidth',10)
 
 c = colorbar;
 % set(gca, 'XScale', 'log');

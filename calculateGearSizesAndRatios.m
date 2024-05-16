@@ -19,9 +19,9 @@ R_arr = D_arr./2; % mm
 % the drop mass. 
 % Note that gear 4 = last gear connected to the lift mass
 
-module = 2 % select module index [note this is not the actual module]
+module = 2; % select module index [note this is not the actual module]
 
-dataArr = zeros(1,4*4 + 2);
+dataArr = zeros(1,4*5 + 2);
 for gear4 = 1:1:length(R_arr)
     r(4) = R_arr(gear4, module); % [mm]
     N(4) = NteethArr(gear4);
@@ -38,7 +38,7 @@ for gear3 = 1:1:length(R_arr)
 eta43 = etaSpur_maN1N2(mu, alpha, N(4), N(3));
 
 F(3) = F(4); % [N*m]
-T(3) = T(4)*R43*eta43/1000; % [N*m]
+T(3) = T(4)*R43*eta43; % [N*m]
 
 mass(3) = spurMass_fosTrsN(FOS,T(3),pla_rho,pla_sigma_yield,N(3)); % [kg]
 
@@ -66,7 +66,7 @@ end
 mass(2) = spurMass_fosTrsN(FOS, T(2), pla_rho, pla_sigma_yield,N(2)); % [kg]
 mass(1) = spurMass_fosTrsN(FOS, T(4), pla_rho, pla_sigma_yield,N(1)); % [kg]
 
-dataArr(end+1,:) = [r F T eta21 eta43 mass];
+dataArr(end+1,:) = [r F T eta21 eta43 mass N];
 end
 end
 end
@@ -115,7 +115,8 @@ z = sum(dataArr(:,15:18),2)./(dataArr(:,13).*dataArr(:,14));
 [optimalZ, optimalIdx] = min(z);
 optimalRow = dataArr(optimalIdx,:);
 fprintf(sprintf('Current Module: %.0f \n', Module_arr(module)));
-optimal_radius = optimalRow(1:4)
+optimal_radius_mm = optimalRow(1:4)
+optimal_width_m = faceWidth_TfosSPN(optimalRow(9:12),FOS, pla_sigma_yield, (1000/Module_arr(module)), optimalRow(19:22))
 R3_over_R4 = x(optimalIdx)
 R1_over_R2 = y(optimalIdx)
 optimal_mass = sum(optimalRow(15:18))

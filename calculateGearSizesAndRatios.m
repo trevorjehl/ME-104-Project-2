@@ -116,7 +116,7 @@ z = sum(dataArr(:,15:18),2)./(dataArr(:,13).*dataArr(:,14));
 optimalRow = dataArr(optimalIdx,:);
 fprintf(sprintf('Current Module: %.0f \n', Module_arr(module)));
 optimal_radius_mm = optimalRow(1:4)
-optimal_width_m = faceWidth_TfosSPN(optimalRow(9:12),FOS, pla_sigma_yield, (1000/Module_arr(module)), optimalRow(19:22))
+optimal_width_m = faceWidth_TfosSPN(optimalRow(9:12), FOS, pla_sigma_yield, (1000/Module_arr(module)), optimalRow(19:22))
 R3_over_R4 = x(optimalIdx)
 R1_over_R2 = y(optimalIdx)
 optimal_mass = sum(optimalRow(15:18))

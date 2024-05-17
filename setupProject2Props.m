@@ -1,10 +1,12 @@
-% Setup project 2 props
+% Setup project 2 properties, including material strength and composition
+% data, and commonly used other project-specific variables.
 addpath('Functions/');
 g = 9.8;
 
 m_lift = 2; % kg
 F_lift = 2*g;
 
+% % % % % % % % % % % % % % MATERIAL PROPERTIES % % % % % % % % % % % % % %
 % PLA PROPERTIES
 pla_sigma_yield = 50*1e6; % [Pa]
 pla_elastic_modulus = 3.6*1e6; % [Pa]
@@ -21,3 +23,4 @@ acrylic_poisson_ratio = 0.370;
 acrylic_shear_modulus = 1.7*10^9; % [Pa]
 acrylic_shear_strength = mean([25.5, 62.1])*10^6; % [Pa]
 acrylic_mu = mean([0.8 0.45]);
+acrylic_rho = 1180; % [kg/m^3]
